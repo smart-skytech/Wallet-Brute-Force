@@ -1,0 +1,4 @@
+requests
+mnemonic
+bip32utils
+tronpy
