@@ -98,10 +98,7 @@ def check_balance_eth(address):
 
 
 # Check Balance on Tron Chain
-def check_balance_tron(address):
-    client = Tron()
-    balance = client.get_account_balance(address)
-    return balance / 10**6  # Convert from Sun to TRX
+
 
 # Log Non-Zero Balance
 def log_non_zero_balance(address, balance, chain):
