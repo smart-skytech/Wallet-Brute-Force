@@ -30,7 +30,6 @@ import requests
 import time
 from mnemonic import Mnemonic
 import bip32utils
-from tronpy import Tron
 from config import BNB_API_KEY, ETH_API_KEY
 
 # License Key Check
