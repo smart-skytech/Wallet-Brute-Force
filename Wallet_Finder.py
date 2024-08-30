@@ -79,12 +79,23 @@ def check_balance_bnb(address):
 def check_balance_eth(address):
     api_url = "https://api.etherscan.io/api?module=account&action=balance&address={}&apikey={}".format(address, ETH_API_KEY)
     response = requests.get(api_url)
+    
     if response.status_code == 200:
         balance_data = response.json()
-        balance = int(balance_data.get("result", 0)) / 10**18  # Convert from Wei to ETH
-        return balance
+        if balance_data.get("status") == "1":  # Check if the status is OK
+            try:
+                balance = int(balance_data.get("result", 0)) / 10**18  # Convert from Wei to ETH
+                return balance
+            except ValueError:
+                print(f"Could not convert balance for address {address}. Invalid response.")
+                return 0
+        else:
+            print(f"Error checking balance for address {address}: {balance_data.get('message', 'Unknown error')}")
+            return 0
     else:
+        print(f"Failed to retrieve balance for address {address}. HTTP status code: {response.status_code}")
         return 0
+
 
 # Check Balance on Tron Chain
 def check_balance_tron(address):
