@@ -116,10 +116,7 @@ def derive_address_from_seed(seed_phrase, chain):
     if chain == 'BNB' or chain == 'ETH':
         derived_key = root_key.ChildKey(44 + bip32utils.BIP32_HARDEN).ChildKey(60 + bip32utils.BIP32_HARDEN).ChildKey(0 + bip32utils.BIP32_HARDEN).ChildKey(0).ChildKey(0)
         return derived_key.Address()
-    elif chain == 'TRX':
-        client = Tron()
-        derived_key = client.get_account_by_mnemonic(seed_phrase)
-        return derived_key.address.base58
+   
 
 # Main Loop
 def main():
