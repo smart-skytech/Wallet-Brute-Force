@@ -1,3 +1,30 @@
+# ==============================================================================
+#  _    _ _    _       _       _   _    _______          _     
+# | |  | | |  | |     | |     | | | |  |__   __|        | |    
+# | |  | | |__| |_   _| |__   | |_| | ___ | | ___   ___ | |___ 
+# | |  | |  __  | | | | '_ \  |  _  |/ _ \| |/ _ \ / _ \| / __|
+# | |__| | |  | | |_| | | | | | | | | (_) | | (_) | (_) | \__ \
+#  \____/|_|  |_|\__, |_| |_| |_| |_|\___/|_|\___/ \___/|_|___/
+#                __/ |                                         
+#               |___/                                          
+# 
+#                        Ahmad Tech version 1
+# ==============================================================================
+
+"""
+Agreement License:
+
+This software is licensed under the Ahmad Tech License Agreement (ATLA).
+
+- The software is provided "as-is", without warranty of any kind, express or implied.
+- You are free to use, modify, and distribute the software, provided that you include
+  this license notice in any copy or substantial portion of the software.
+- The author shall not be held liable for any damages arising from the use of this software.
+
+By using this software, you agree to these terms.
+"""
+
+import sys
 import random
 import requests
 import time
@@ -6,6 +33,18 @@ import bip32utils
 from tronpy import Tron
 from config import BNB_API_KEY, ETH_API_KEY
 
+# License Key Check
+REQUIRED_LICENSE_KEY = "1A47414637737494DCD513B767CE7"
+
+def check_license():
+    user_key = input("Please enter your license key: ")
+    if user_key != REQUIRED_LICENSE_KEY:
+        print("Invalid license key. Access denied.")
+        sys.exit(1)  # Exit the script with an error code
+
+check_license()
+
+# The rest of the script continues only if the correct license key is provided
 # Load Wordlist
 def load_wordlist(filepath):
     with open(filepath, 'r') as file:
@@ -17,7 +56,7 @@ def get_random_address(wordlist):
 
 # Check Balance on BNB Chain
 def check_balance_bnb(address):
-    api_url = f"https://api.bscscan.com/api?module=account&action=balance&address={address}&apikey={BNB_API_KEY}"
+    api_url = "https://api.bscscan.com/api?module=account&action=balance&address={}&apikey={}".format(address, BNB_API_KEY)
     response = requests.get(api_url)
     if response.status_code == 200:
         balance_data = response.json()
@@ -28,7 +67,7 @@ def check_balance_bnb(address):
 
 # Check Balance on Ethereum Chain
 def check_balance_eth(address):
-    api_url = f"https://api.etherscan.io/api?module=account&action=balance&address={address}&apikey={ETH_API_KEY}"
+    api_url = "https://api.etherscan.io/api?module=account&action=balance&address={}&apikey={}".format(address, ETH_API_KEY)
     response = requests.get(api_url)
     if response.status_code == 200:
         balance_data = response.json()
@@ -46,8 +85,8 @@ def check_balance_tron(address):
 # Log Non-Zero Balance
 def log_non_zero_balance(address, balance, chain):
     with open('results.txt', 'a') as log_file:
-        log_file.write(f"Chain: {chain}, Address: {address}, Balance: {balance}\n")
-    print(f"Non-Zero Balance Found - Chain: {chain}, Address: {address}, Balance: {balance}")
+        log_file.write("Chain: {}, Address: {}, Balance: {}\n".format(chain, address, balance))
+    print("Non-Zero Balance Found - Chain: {}, Address: {}, Balance: {}".format(chain, address, balance))
 
 # Generate Seed Phrase
 def generate_seed_phrase():
@@ -92,8 +131,8 @@ def match_seed_phrase(address, chain):
         derived_address = derive_address_from_seed(seed_phrase, chain)
         if derived_address == address:
             with open('matched_seed_phrases.txt', 'a') as match_file:
-                match_file.write(f"Chain: {chain}, Address: {address}, Seed Phrase: {seed_phrase}\n")
-            print(f"Matched Seed Phrase Found! Chain: {chain}, Address: {address}, Seed Phrase: {seed_phrase}")
+                match_file.write("Chain: {}, Address: {}, Seed Phrase: {}\n".format(chain, address, seed_phrase))
+            print("Matched Seed Phrase Found! Chain: {}, Address: {}, Seed Phrase: {}".format(chain, address, seed_phrase))
             break
 
 if __name__ == "__main__":
