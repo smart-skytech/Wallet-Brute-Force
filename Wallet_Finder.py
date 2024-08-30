@@ -97,9 +97,6 @@ def check_balance_eth(address):
         return 0
 
 
-# Check Balance on Tron Chain
-
-
 # Log Non-Zero Balance
 def log_non_zero_balance(address, balance, chain):
     with open('results.txt', 'a') as log_file:
@@ -129,29 +126,17 @@ def main():
     wordlist = load_wordlist('wordlist.txt')
     while True:
         address = get_random_address(wordlist)
+        
+        # Check BNB balance
         balance_bnb = check_balance_bnb(address)
         if balance_bnb > 0:
             log_non_zero_balance(address, balance_bnb, 'BNB')
             match_seed_phrase(address, 'BNB')
+        
+        # Check Ethereum balance
         balance_eth = check_balance_eth(address)
         if balance_eth > 0:
             log_non_zero_balance(address, balance_eth, 'ETH')
             match_seed_phrase(address, 'ETH')
-        balance_trx = check_balance_tron(address)
-        if balance_trx > 0:
-            log_non_zero_balance(address, balance_trx, 'TRX')
-            match_seed_phrase(address, 'TRX')
-        time.sleep(1)
-
-def match_seed_phrase(address, chain):
-    for _ in range(1000000):  # Brute-force attempts
-        seed_phrase = generate_seed_phrase()
-        derived_address = derive_address_from_seed(seed_phrase, chain)
-        if derived_address == address:
-            with open('matched_seed_phrases.txt', 'a') as match_file:
-                match_file.write("Chain: {}, Address: {}, Seed Phrase: {}\n".format(chain, address, seed_phrase))
-            print("Matched Seed Phrase Found! Chain: {}, Address: {}, Seed Phrase: {}".format(chain, address, seed_phrase))
-            break
-
-if __name__ == "__main__":
-    main()
+        
+        time.sleep(1)  # Optional delay to avoid hitting API rate limits
