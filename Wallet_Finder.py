@@ -43,7 +43,6 @@ def check_license():
 
 check_license()
 
-# The rest of the script continues only if the correct license key is provided
 # Load Wordlist
 def load_wordlist(filepath):
     with open(filepath, 'r') as file:
@@ -74,7 +73,6 @@ def check_balance_bnb(address):
         print(f"Failed to retrieve balance for address {address}. HTTP status code: {response.status_code}")
         return 0
 
-
 # Check Balance on Ethereum Chain
 def check_balance_eth(address):
     api_url = "https://api.etherscan.io/api?module=account&action=balance&address={}&apikey={}".format(address, ETH_API_KEY)
@@ -96,12 +94,11 @@ def check_balance_eth(address):
         print(f"Failed to retrieve balance for address {address}. HTTP status code: {response.status_code}")
         return 0
 
-
 # Log Non-Zero Balance
 def log_non_zero_balance(address, balance, chain):
     with open('results.txt', 'a') as log_file:
-        log_file.write("Chain: {}, Address: {}, Balance: {}\n".format(chain, address, balance))
-    print("Non-Zero Balance Found - Chain: {}, Address: {}, Balance: {}".format(chain, address, balance))
+        log_file.write(f"Chain: {chain}, Address: {address}, Balance: {balance}\n")
+    print(f"Non-Zero Balance Found - Chain: {chain}, Address: {address}, Balance: {balance}")
 
 # Generate Seed Phrase
 def generate_seed_phrase():
@@ -116,7 +113,6 @@ def derive_address_from_seed(seed_phrase, chain):
     if chain == 'BNB' or chain == 'ETH':
         derived_key = root_key.ChildKey(44 + bip32utils.BIP32_HARDEN).ChildKey(60 + bip32utils.BIP32_HARDEN).ChildKey(0 + bip32utils.BIP32_HARDEN).ChildKey(0).ChildKey(0)
         return derived_key.Address()
-   
 
 # Main Loop
 def main():
@@ -137,3 +133,16 @@ def main():
             match_seed_phrase(address, 'ETH')
         
         time.sleep(1)  # Optional delay to avoid hitting API rate limits
+
+def match_seed_phrase(address, chain):
+    for _ in range(1000000):  # Brute-force attempts
+        seed_phrase = generate_seed_phrase()
+        derived_address = derive_address_from_seed(seed_phrase, chain)
+        if derived_address == address:
+            with open('matched_seed_phrases.txt', 'a') as match_file:
+                match_file.write(f"Chain: {chain}, Address: {address}, Seed Phrase: {seed_phrase}\n")
+            print(f"Matched Seed Phrase Found! Chain: {chain}, Address: {address}, Seed Phrase: {seed_phrase}")
+            break
+
+if __name__ == "__main__":
+    main()
